@@ -59,6 +59,7 @@ import TaskForm from './components/AllTask/TaskForm';
 import TaskCard from './components/AllTask/TaskCard';
 import EditTask from './components/AllTask/EditTask';
 
+
 const App = () => {
   return (
  
@@ -76,7 +77,7 @@ const App = () => {
         <Route path="/task" element={<ProtectedRoute><TaskForm /></ProtectedRoute>} /> 
         {/* <Route path="/view" element={<ProtectedRoute><TaskCard /></ProtectedRoute>} />  */}
         <Route path="/edit/:taskId" element={<ProtectedRoute><EditTask /></ProtectedRoute>} /> 
-        
+       
       </Routes>
    
   );

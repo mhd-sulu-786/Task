@@ -1,29 +1,4 @@
-// import React from "react";
-// import { TextField, Button, Box } from "@mui/material";
 
-// const TaskForm = ({ newTopic, setNewTopic, newSubtasks, setNewSubtasks, addTask }) => {
-//   return (
-//     <Box sx={{ marginBottom: 4, display: "flex", gap: 2 }}>
-//       <TextField
-//         label="New Topic"
-//         value={newTopic}
-//         onChange={(e) => setNewTopic(e.target.value)}
-//         fullWidth
-//       />
-//       <TextField
-//         label="Subtasks (comma-separated)"
-//         value={newSubtasks}
-//         onChange={(e) => setNewSubtasks(e.target.value)}
-//         fullWidth
-//       />
-//       <Button onClick={addTask} variant="contained" sx={{ alignSelf: "center" }}>
-//         Add Task
-//       </Button>
-//     </Box>
-//   );
-// };
-
-// export default TaskForm;
 
 import React, { useState } from "react";
 import { TextField, Button, Box } from "@mui/material";
