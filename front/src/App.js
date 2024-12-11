@@ -57,6 +57,7 @@ import Board from './components/AllTask/Board';
 import Profile from './Pages/Profile';
 import TaskForm from './components/AllTask/TaskForm';
 import TaskCard from './components/AllTask/TaskCard';
+import EditTask from './components/AllTask/EditTask';
 
 const App = () => {
   return (
@@ -65,7 +66,7 @@ const App = () => {
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Register />} />
-        {/* <Route path="/board" element={<TaskBoard />} /> */}
+        
         <Route path="/board" element={<Board />} />
         {/* Protected Routes */}
         <Route path="/dashboard/:id" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
@@ -73,9 +74,9 @@ const App = () => {
         <Route path="/profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
         <Route path="/task" element={<ProtectedRoute><TaskForm /></ProtectedRoute>} /> 
-        <Route path="/view" element={<ProtectedRoute><TaskCard /></ProtectedRoute>} /> 
-        {/* Add fallback route if needed */}
-        {/* <Route path="*" element={<NotFound />} /> */}
+        {/* <Route path="/view" element={<ProtectedRoute><TaskCard /></ProtectedRoute>} />  */}
+        <Route path="/edit/:taskId" element={<ProtectedRoute><EditTask /></ProtectedRoute>} /> 
+        
       </Routes>
    
   );

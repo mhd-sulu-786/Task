@@ -22,12 +22,14 @@ model User {
 }
 
 model Task {
-  id          Int    @id @default(autoincrement())
-  title       String
-  description String
-  rank        Int?
-  userId      Int
-  user        User   @relation(fields: [userId], references: [id])
+    id          Int      @id @default(autoincrement())
+    title       String
+    description String
+    rank        Int?
+    userId      Int
+    isChecked   Boolean  @default(false) // New field for checkbox state
+    user        User     @relation(fields: [userId], references: [id])
 }
+
 
 

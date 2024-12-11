@@ -94,7 +94,6 @@
 
 // export default EditTaskModal;
 
-
 import React, { useState, useEffect } from "react";
 import {
   Modal,
@@ -105,12 +104,14 @@ import {
   TextareaAutosize,
 } from "@mui/material";
 import axios from "axios";
+import { data, useNavigate, useParams } from "react-router-dom";
 
-const EditTask = ({ open, closeModal, saveTaskEdit, taskId }) => {
-  const [newTitle, setNewTitle] = useState("");
-  const [newDescription, setNewDescription] = useState("");
+const EditTask = ({ open, closeModal, saveTaskEdit }) => {
+  const { taskId } = useParams(); // Destructure the taskId from useParams()
+  const [title,setTitle]=useState("")
+  const [description,setDescription]=useState("")
   const token = localStorage.getItem("token");
-
+const navigate=useNavigate()
   useEffect(() => {
     if (taskId) {
       axios
@@ -118,8 +119,8 @@ const EditTask = ({ open, closeModal, saveTaskEdit, taskId }) => {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => {
-          setNewTitle(res.data.title);
-          setNewDescription(res.data.description);
+          setTitle(res.data.title);
+          setDescription(res.data.description);
         })
         .catch((err) => console.error(err));
     }
@@ -130,22 +131,28 @@ const EditTask = ({ open, closeModal, saveTaskEdit, taskId }) => {
       await axios.put(
         `http://localhost:7000/api/updatetasks/${taskId}`,
         {
-          title: newTitle,
-          description: newDescription,
+          title: title,
+          description: description,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
-      );
-      saveTaskEdit();
-      closeModal();
+      )
+      // saveTaskEdit(); // Call parent callback for refreshing data
+      // closeModal();
+     .then((res)=>{
+console.log(res.data);
+navigate('/board')
+alert("updated")
+
+     })
     } catch (error) {
       console.error("Error saving task:", error);
     }
   };
 
   return (
-    <Modal open={open} onClose={closeModal}>
+    // <Modal open={open} onClose={closeModal}>
       <Box
         sx={{
           position: "absolute",
@@ -162,16 +169,16 @@ const EditTask = ({ open, closeModal, saveTaskEdit, taskId }) => {
         <Typography variant="h6">Edit Task</Typography>
         <TextField
           label="Title"
-          value={newTitle}
-          onChange={(e) => setNewTitle(e.target.value)}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           fullWidth
           sx={{ marginBottom: 2 }}
         />
         <TextareaAutosize
           minRows={3}
           placeholder="Description"
-          value={newDescription}
-          onChange={(e) => setNewDescription(e.target.value)}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           style={{ width: "100%", padding: 8 }}
         />
         <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
@@ -183,7 +190,7 @@ const EditTask = ({ open, closeModal, saveTaskEdit, taskId }) => {
           </Button>
         </Box>
       </Box>
-    </Modal>
+    // </Modal>
   );
 };
 

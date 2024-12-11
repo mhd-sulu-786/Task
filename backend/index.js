@@ -481,22 +481,57 @@ app.put('/api/updatetasks/:id', authenticateToken, async (req, res) => {
 });
 
 // Delete Task
+// app.delete('/api/deletetasks/:id', authenticateToken, async (req, res) => {
+//     const { id } = req.params;
+
+//     try {
+//         const task = await prisma.task.findUnique({ where: { id: parseInt(id) } });
+//         if (!task) {
+//             return res.status(404).json({ message: 'Task not found' });
+//         }
+
+//         await prisma.task.delete({ where: { id: parseInt(id) } });
+//         res.json({ message: 'Task deleted' });
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).json({ message: 'Error deleting task', error: err.message });
+//     }
+// });
+
+
 app.delete('/api/deletetasks/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
+    console.log(`Received task ID for deletion: ${id}`); // Log received task ID
 
     try {
-        const task = await prisma.task.findUnique({ where: { id: parseInt(id) } });
+        // Ensure the task ID is parsed correctly as an integer
+        const taskId = parseInt(id, 10);
+        if (isNaN(taskId)) {
+            return res.status(400).json({ message: 'Invalid task ID' });
+        }
+
+        // Log the parsed task ID for debugging
+        console.log(`Parsed task ID: ${taskId}`);
+
+        // Find the task by the correct task ID
+        const task = await prisma.task.findUnique({ where: { id: taskId } });
+
         if (!task) {
             return res.status(404).json({ message: 'Task not found' });
         }
 
-        await prisma.task.delete({ where: { id: parseInt(id) } });
+        // Delete the task
+        await prisma.task.delete({ where: { id: taskId } });
+        console.log(`Task with ID ${taskId} has been deleted`); // Log task deletion
         res.json({ message: 'Task deleted' });
     } catch (err) {
-        console.log(err);
+        console.error('Error in delete task:', err);
         res.status(500).json({ message: 'Error deleting task', error: err.message });
     }
 });
+
+
+
 
 // Get Unranked Tasks
 app.get('/tasks/unranked', authenticateToken, async (req, res) => {
@@ -563,6 +598,52 @@ app.get('/api/users/:id', authenticateToken, async (req, res) => {
         res.status(500).json({ message: 'Error fetching user', error: err.message });
     }
 });
+
+
+
+// checkbox
+app.put('/api/tasks/:id/toggle', authenticateToken, async (req, res) => {
+    const { id } = req.params;
+    const { isChecked } = req.body;
+
+    try {
+        const task = await prisma.task.update({
+            where: { id: parseInt(id) },
+            data: { isChecked },
+        });
+        res.json(task);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error updating task checkbox state', error: err.message });
+    }
+});
+
+
+app.get('/api/tasks/checked', authenticateToken, async (req, res) => {
+    try {
+        const tasks = await prisma.task.findMany({
+            where: { userId: req.user.id, isChecked: true },
+        });
+        res.json(tasks);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error fetching checked tasks', error: err.message });
+    }
+});
+
+app.get('/api/tasks/unchecked', authenticateToken, async (req, res) => {
+    try {
+        const tasks = await prisma.task.findMany({
+            where: { userId: req.user.id, isChecked: false },
+        });
+        res.json(tasks);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error fetching unchecked tasks', error: err.message });
+    }
+});
+
+
 
 
 // Graceful shutdown
