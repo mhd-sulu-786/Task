@@ -43,13 +43,20 @@
 // export default App;
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {  Routes, Route } from 'react-router-dom';
 import Login from './components/Auth/Login'; 
 import Register from './components/Auth/Register'; 
 import ProtectedRoute from './components/ProtectedRoute';
-import TaskCRUD from './components/Task/Task';
-import TaskRanking from './components/Task/TaskRanking';
+// import TaskCRUD from './components/Task/Task';
+// import TaskRanking from './components/Task/TaskRanking';
 import Dashboard from './Pages/NavBar';
+// import TaskList from './components/Task/TaskList';
+// import Task from './components/Task/Task';
+// import TaskBoard from './components/Task/TaskBoard';
+import Board from './components/AllTask/Board';
+import Profile from './Pages/Profile';
+import TaskForm from './components/AllTask/TaskForm';
+import TaskCard from './components/AllTask/TaskCard';
 
 const App = () => {
   return (
@@ -58,12 +65,15 @@ const App = () => {
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Register />} />
-
+        {/* <Route path="/board" element={<TaskBoard />} /> */}
+        <Route path="/board" element={<Board />} />
         {/* Protected Routes */}
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/tasks" element={<ProtectedRoute><TaskCRUD /></ProtectedRoute>} />
-        <Route path="/ranking" element={<ProtectedRoute><TaskRanking /></ProtectedRoute>} />
+        <Route path="/dashboard/:id" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/board" element={<ProtectedRoute><Board /></ProtectedRoute>} />
+        <Route path="/profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
+        <Route path="/task" element={<ProtectedRoute><TaskForm /></ProtectedRoute>} /> 
+        <Route path="/view" element={<ProtectedRoute><TaskCard /></ProtectedRoute>} /> 
         {/* Add fallback route if needed */}
         {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>

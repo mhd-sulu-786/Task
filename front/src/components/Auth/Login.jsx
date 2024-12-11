@@ -17,10 +17,11 @@ const navigate=useNavigate()
       const response = await axios.post('http://localhost:7000/auth/login', formData);
       const token = response.data.token;
       localStorage.setItem('token', token);
+      localStorage.setItem('id', response.data.id);
       setMessage('Login successful!');
       console.log(response.data);
       alert('Login successful!');
-      navigate('/dashboard')
+      navigate(`/dashboard/${response.data.id}`);
       
     } catch (error) {
       setMessage('Login failed. Please check your credentials.');

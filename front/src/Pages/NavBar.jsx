@@ -13,10 +13,17 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { Link, useNavigate } from 'react-router-dom';
-import TaskDialog from '../components/Task/Update';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+// import TaskDialog from '../components/Task/CreateUpdate';
 import { useEffect } from 'react';
-
+import Avatar from '@mui/material/Avatar';
+import MenuIcon from '@mui/icons-material/Menu';
+import IconButton from '@mui/material/IconButton';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Home from './Home';
 
 const Skeleton = styled('div')(({ theme, height }) => ({
   backgroundColor: theme.palette.action.hover,
@@ -31,7 +38,7 @@ const NAVIGATION: Navigation = [
     title: 'Main items',
   },
   {
-    segment: 'dashboard',
+    // segment: 'dashboard',
     title: 'Dashboard',
     icon: <DashboardIcon />,
   },
@@ -100,37 +107,36 @@ function useDemoRouter(initialPath: string): Router {
 }
 
 export default function Dashboard(props: any) {
+  const id=  localStorage.getItem("id");
   const { window } = props;
   const navigate = useNavigate(); // Hook to navigate programmatically
+  const userId=useParams()
 
   const router = useDemoRouter('/dashboard');
-  const [openDialog, setOpenDialog] = React.useState(false); // Manage Dialog State
-  const [task, setTask] = React.useState(null);  // To hold selected task data
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [task, setTask] = React.useState(null);
+  const [openDrawer, setOpenDrawer] = React.useState(false);
 
   const handleTaskClick = () => {
-    setTask(null);  // Reset task state when creating a new task
-    setOpenDialog(true); // Open the dialog when 'Task' button is clicked
+    setTask(null);
+    setOpenDialog(true);
   };
 
   const handleLogout = () => {
-    // Clear session storage or authentication tokens
-    localStorage.removeItem('authToken');  // Example for token removal
-    sessionStorage.clear();  // Clear session if any
-
-    // Redirect to the login page (or home)
-    navigate('/login');  // Assuming you have a '/login' route for the login page
+    localStorage.removeItem('authToken');
+    sessionStorage.clear();
+    navigate('/login');
   };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false); // Close the dialog
+    setOpenDialog(false);
   };
 
-  // Corrected: Check window type properly
   const demoWindow = typeof window === 'function' ? window() : undefined;
 
-  useEffect(()=>{
-
-  })
+  useEffect(() => {
+    // Placeholder for any potential side-effects
+  }, []);
 
   return (
     <AppProvider
@@ -140,47 +146,73 @@ export default function Dashboard(props: any) {
       window={demoWindow}
     >
       <DashboardLayout>
-        {/* Navbar inside Toolpad layout */}
-        <AppBar position="sticky" sx={{ backgroundColor: 'rgba(0,0,0,0.6)', boxShadow: 'none' }}>
+        <AppBar position="sticky" sx={{ backgroundColor: 'rgba(0,0,0,0.8)', boxShadow: 'none' }}>
           <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          
-           
-
-            {/* Toolpad logo or text in the center */}
+            <IconButton edge="start" color="inherit" onClick={() => setOpenDrawer(true)} sx={{ display: { xs: 'block', md: 'none' } }}>
+              <MenuIcon />
+            </IconButton>
             <Typography variant="h6" sx={{ flexGrow: 1, textAlign: 'center' }}>
               TaskApp
             </Typography>
-
-            {/* Right side: Home and About buttons */}
-            <div>
+            <div style={{ display: 'flex', gap: 10 }}>
               <Button color="inherit" component={Link} to="/">
                 Home
               </Button>
               <Button color="inherit" component={Link} to="/about">
                 About
               </Button>
-              <Button color="inherit" onClick={handleTaskClick}>
-              Task
-            </Button>
+              <Button color="inherit" component={Link} to="/board">
+                Task
+              </Button>
               <Button color="inherit" onClick={handleLogout}>
                 Logout
               </Button>
+              <Avatar
+                src="/broken-image.jpg"
+                onClick={() => {
+                 // Replace with actual user ID logic
+                  navigate(`/profile/${id}`);
+                }}
+              />
             </div>
           </Toolbar>
         </AppBar>
 
-        {/* Page Content */}
+        <Drawer
+          anchor="left"
+          open={openDrawer}
+          onClose={() => setOpenDrawer(false)}
+          variant="temporary"
+          sx={{
+            '& .MuiDrawer-paper': {
+              width: 250,
+            },
+          }}
+        >
+          <List>
+            {NAVIGATION.map((item) => (
+              item.kind !== 'divider' ? (
+                <ListItem button key={item.segment} component={Link} to={`/${item.segment}`}>
+                  <ListItemText primary={item.title} />
+                </ListItem>
+              ) : (
+                <hr key={item.title} />
+              )
+            ))}
+          </List>
+        </Drawer>
+
         <PageContainer>
-          
+          {/* Add content here */}
+          <Home/>
         </PageContainer>
       </DashboardLayout>
 
-      {/* Task Dialog */}
-      <TaskDialog
+      {/* <TaskDialog
         open={openDialog}
         onClose={handleCloseDialog}
-        task={task} // Pass the task data (null for new task or the task to edit)
-      />
+        task={task}
+      /> */}
     </AppProvider>
   );
 }
