@@ -131,15 +131,20 @@ const TaskBoard = () => {
   const sortedTasks = {
     todo: tasks.filter((task) => {
       const subtasks = safeJSONParse(task.description);
-      return !subtasks.some((subtask) => subtask.completed);
+      const incompleteSubtasks = subtasks.filter((subtask) => !subtask.isChecked);
+      return incompleteSubtasks.length === subtasks.length; // All subtasks are not completed
     }),
+  
     inProgress: tasks.filter((task) => {
       const subtasks = safeJSONParse(task.description);
-      return subtasks.some((subtask) => !subtask.completed);
+      const incompleteSubtasks = subtasks.filter((subtask) => !subtask.isChecked);
+      return incompleteSubtasks.length > 0 && incompleteSubtasks.length < subtasks.length; // Some but not all subtasks are incomplete
     }),
+  
     done: tasks.filter((task) => {
       const subtasks = safeJSONParse(task.description);
-      return subtasks.every((subtask) => subtask.completed);
+      const incompleteSubtasks = subtasks.filter((subtask) => !subtask.isChecked);
+      return incompleteSubtasks.length === 0; // All subtasks are completed
     }),
   };
 

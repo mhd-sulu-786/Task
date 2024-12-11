@@ -170,27 +170,34 @@ app.get('/api/tasksbyid/:id', authenticateToken, async (req, res) => {
 app.put('/api/updatetasks/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
     const { title, description } = req.body;
-
+  
     if (!title || !description) {
-        return res.status(400).json({ message: 'Title and description are required' });
+      return res.status(400).json({ message: 'Title and description are required' });
     }
-
+  
     try {
-        const task = await prisma.task.findUnique({ where: { id: parseInt(id) } });
-        if (!task) {
-            return res.status(404).json({ message: 'Task not found' });
-        }
-
-        const updatedTask = await prisma.task.update({
-            where: { id: parseInt(id) },
-            data: { title, description },
-        });
-        res.json(updatedTask);
+      // Ensure the task exists before updating
+      const task = await prisma.task.findUnique({ where: { id: parseInt(id) } });
+      if (!task) {
+        return res.status(404).json({ message: 'Task not found' });
+      }
+  
+      // Update task with new title and description
+      const updatedTask = await prisma.task.update({
+        where: { id: parseInt(id) },
+        data: {
+          title,
+          description, // Directly update the description (it should be a JSON string)
+        },
+      });
+  
+      res.json(updatedTask); // Return the updated task
     } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: 'Error updating task', error: err.message });
+      console.log(err);
+      res.status(500).json({ message: 'Error updating task', error: err.message });
     }
-});
+  });
+  
 
 // Delete Task
 // app.delete('/api/deletetasks/:id', authenticateToken, async (req, res) => {

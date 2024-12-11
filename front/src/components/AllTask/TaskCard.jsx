@@ -28,22 +28,23 @@ const TaskCard = ({ task, setTasks }) => {
     const updatedSubtasks = [...parsedDescription];
     updatedSubtasks[subtaskIndex] = {
       ...updatedSubtasks[subtaskIndex],
-      completed: !updatedSubtasks[subtaskIndex].completed,
+      isChecked: !updatedSubtasks[subtaskIndex].isChecked, // Toggle isChecked
     };
-
+  
     axios
       .put(
-        `http://localhost:7000/api/tasks/${taskId}/toggle`,
-        { isChecked: updatedSubtasks[subtaskIndex].completed },
+        `http://localhost:7000/api/updatetasks/${taskId}`,
+        { title: task.title, description: JSON.stringify(updatedSubtasks) }, // Send updated subtasks as a string
         { headers: { Authorization: `Bearer ${token}` } }
       )
       .then(() => {
-        setParsedDescription(updatedSubtasks); // Update subtasks state
+        setParsedDescription(updatedSubtasks); // Update subtasks state locally
       })
       .catch((err) => {
         console.error("Error updating subtask:", err);
       });
   };
+  
 
   const deleteTask = (taskId) => {
     axios
